@@ -1,0 +1,9 @@
+# Dependencies and Angular output
+node_modules/
+dist/
+.angular/
+
+# Editor and operating-system files
+.DS_Store
+.idea/
+.vscode/

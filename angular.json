@@ -1,0 +1,9 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "projects": {
+    "shell": { "projectType": "application", "root": "shell", "sourceRoot": "shell/src", "architect": { "build": { "builder": "@angular/build:application", "options": { "browser": "shell/src/main.ts", "tsConfig": "shell/tsconfig.app.json", "styles": ["shell/src/styles.scss"] } }, "serve": { "builder": "@angular/build:dev-server", "options": { "buildTarget": "shell:build" } } } },
+    "accounts": { "projectType": "application", "root": "accounts", "sourceRoot": "accounts/src", "architect": { "build": { "builder": "@angular/build:application", "options": { "browser": "accounts/src/main.ts", "tsConfig": "accounts/tsconfig.app.json", "styles": ["accounts/src/styles.scss"] } }, "serve": { "builder": "@angular/build:dev-server", "options": { "buildTarget": "accounts:build" } } } },
+    "trading": { "projectType": "application", "root": "trading", "sourceRoot": "trading/src", "architect": { "build": { "builder": "@angular/build:application", "options": { "browser": "trading/src/main.ts", "tsConfig": "trading/tsconfig.app.json", "styles": ["trading/src/styles.scss"] } }, "serve": { "builder": "@angular/build:dev-server", "options": { "buildTarget": "trading:build" } } } }
+  }
+}

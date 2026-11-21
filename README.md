@@ -123,6 +123,37 @@ npm run build:trading
 
 Angular writes build output to `dist/`, which is intentionally excluded from Git.
 
+## Deploy with Docker
+
+Docker Compose produces three small Nginx images. Angular is compiled in a Node 22 LTS build stage, so Docker deployment is not affected by a non-LTS Node version installed on the host.
+
+```bash
+docker compose up --build -d
+```
+
+Once the services are healthy, open:
+
+| Service | URL |
+| --- | --- |
+| Shell | [http://localhost:4200](http://localhost:4200) |
+| Accounts | [http://localhost:4201](http://localhost:4201) |
+| Trading | [http://localhost:4202](http://localhost:4202) |
+
+Inspect service status and logs:
+
+```bash
+docker compose ps
+docker compose logs -f
+```
+
+Stop the local deployment without removing images:
+
+```bash
+docker compose down
+```
+
+To ship the applications to a registry, tag and push each Compose-built image (`northstar-shell`, `northstar-accounts`, and `northstar-trading`) to your container registry, then replace the local `build` blocks in `docker-compose.yml` with the corresponding `image:` references.
+
 ## Project structure
 
 ```text

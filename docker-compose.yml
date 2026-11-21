@@ -1,0 +1,42 @@
+services:
+  shell:
+    build:
+      context: .
+      target: shell
+    image: northstar-shell:local
+    ports:
+      - "4200:80"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost/ > /dev/null"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  accounts:
+    build:
+      context: .
+      target: accounts
+    image: northstar-accounts:local
+    ports:
+      - "4201:80"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost/ > /dev/null"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  trading:
+    build:
+      context: .
+      target: trading
+    image: northstar-trading:local
+    ports:
+      - "4202:80"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost/ > /dev/null"]
+      interval: 30s
+      timeout: 5s
+      retries: 3

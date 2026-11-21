@@ -1,5 +1,8 @@
-import { bootstrapApplication } from '@angular/platform-browser';
-import { provideRouter } from '@angular/router';
-import { App, routes } from './app/app';
+import { initFederation } from '@angular-architects/native-federation-v4';
 
-bootstrapApplication(App, { providers: [provideRouter(routes)] });
+initFederation('assets/federation.manifest.json', {
+  hostRemoteEntry: { url: "./remoteEntry.json" }
+})
+  .catch(err => console.error(err))
+  .then(_ => import('./bootstrap'))
+  .catch(err => console.error(err));

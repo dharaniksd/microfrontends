@@ -40,3 +40,31 @@ services:
       interval: 30s
       timeout: 5s
       retries: 3
+
+  profile:
+    build:
+      context: .
+      target: profile
+    image: northstar-profile:local
+    ports:
+      - "4203:80"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost/ > /dev/null"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  notifications:
+    build:
+      context: .
+      target: notifications
+    image: northstar-notifications:local
+    ports:
+      - "4204:80"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost/ > /dev/null"]
+      interval: 30s
+      timeout: 5s
+      retries: 3

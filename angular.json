@@ -1,9 +1,378 @@
 {
-  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
-  "version": 1,
-  "projects": {
-    "shell": { "projectType": "application", "root": "shell", "sourceRoot": "shell/src", "architect": { "build": { "builder": "@angular/build:application", "options": { "browser": "shell/src/main.ts", "tsConfig": "shell/tsconfig.app.json", "styles": ["shell/src/styles.scss"] } }, "serve": { "builder": "@angular/build:dev-server", "options": { "buildTarget": "shell:build" } } } },
-    "accounts": { "projectType": "application", "root": "accounts", "sourceRoot": "accounts/src", "architect": { "build": { "builder": "@angular/build:application", "options": { "browser": "accounts/src/main.ts", "tsConfig": "accounts/tsconfig.app.json", "styles": ["accounts/src/styles.scss"] } }, "serve": { "builder": "@angular/build:dev-server", "options": { "buildTarget": "accounts:build" } } } },
-    "trading": { "projectType": "application", "root": "trading", "sourceRoot": "trading/src", "architect": { "build": { "builder": "@angular/build:application", "options": { "browser": "trading/src/main.ts", "tsConfig": "trading/tsconfig.app.json", "styles": ["trading/src/styles.scss"] } }, "serve": { "builder": "@angular/build:dev-server", "options": { "buildTarget": "trading:build" } } } }
-  }
+	"$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+	"version": 1,
+	"projects": {
+		"shell": {
+			"projectType": "application",
+			"root": "shell",
+			"sourceRoot": "shell/src",
+			"architect": {
+				"build": {
+					"builder": "@angular-architects/native-federation-v4:build",
+					"options": {
+						"cacheExternalArtifacts": true,
+						"tsConfig": "shell/tsconfig.federation.json"
+					},
+					"configurations": {
+						"production": {
+							"target": "shell:esbuild:production"
+						},
+						"development": {
+							"target": "shell:esbuild:development",
+							"dev": true
+						}
+					},
+					"defaultConfiguration": "production"
+				},
+				"serve": {
+					"builder": "@angular-architects/native-federation-v4:build",
+					"options": {
+						"target": "shell:serve-original:development",
+						"tsConfig": "shell/tsconfig.federation.json",
+						"rebuildDelay": 500,
+						"cacheExternalArtifacts": true,
+						"dev": true,
+						"devServer": true,
+						"port": 0
+					}
+				},
+				"esbuild": {
+					"builder": "@angular/build:application",
+					"options": {
+						"browser": "shell/src/main.ts",
+						"tsConfig": "shell/tsconfig.app.json",
+						"assets": [
+							{
+								"glob": "**/*",
+								"input": "shell/src/assets",
+								"output": "assets"
+							}
+						],
+						"styles": [
+							"shell/src/styles.scss"
+						],
+						"polyfills": [
+							"es-module-shims"
+						]
+					},
+					"configurations": {
+						"production": {
+							"outputHashing": "all"
+						},
+						"development": {
+							"optimization": false,
+							"extractLicenses": false,
+							"sourceMap": true
+						}
+					},
+					"defaultConfiguration": "production"
+				},
+				"serve-original": {
+					"builder": "@angular/build:dev-server",
+					"configurations": {
+						"production": {
+							"buildTarget": "shell:esbuild:production"
+						},
+						"development": {
+							"buildTarget": "shell:esbuild:development"
+						}
+					},
+					"defaultConfiguration": "development",
+					"options": {
+						"port": 4200
+					}
+				}
+			}
+		},
+		"accounts": {
+			"projectType": "application",
+			"root": "accounts",
+			"sourceRoot": "accounts/src",
+			"architect": {
+				"build": {
+					"builder": "@angular/build:application",
+					"options": {
+						"browser": "accounts/src/main.ts",
+						"tsConfig": "accounts/tsconfig.app.json",
+						"styles": [
+							"accounts/src/styles.scss"
+						]
+					}
+				},
+				"serve": {
+					"builder": "@angular/build:dev-server",
+					"options": {
+						"buildTarget": "accounts:build"
+					}
+				}
+			}
+		},
+		"trading": {
+			"projectType": "application",
+			"root": "trading",
+			"sourceRoot": "trading/src",
+			"architect": {
+				"build": {
+					"builder": "@angular/build:application",
+					"options": {
+						"browser": "trading/src/main.ts",
+						"tsConfig": "trading/tsconfig.app.json",
+						"styles": [
+							"trading/src/styles.scss"
+						]
+					}
+				},
+				"serve": {
+					"builder": "@angular/build:dev-server",
+					"options": {
+						"buildTarget": "trading:build"
+					}
+				}
+			}
+		},
+		"profile": {
+			"projectType": "application",
+			"schematics": {
+				"@schematics/angular:component": {
+					"style": "scss",
+					"skipTests": true
+				},
+				"@schematics/angular:class": {
+					"skipTests": true
+				},
+				"@schematics/angular:directive": {
+					"skipTests": true
+				},
+				"@schematics/angular:guard": {
+					"skipTests": true
+				},
+				"@schematics/angular:interceptor": {
+					"skipTests": true
+				},
+				"@schematics/angular:pipe": {
+					"skipTests": true
+				},
+				"@schematics/angular:resolver": {
+					"skipTests": true
+				},
+				"@schematics/angular:service": {
+					"skipTests": true
+				}
+			},
+			"root": "profile",
+			"sourceRoot": "profile/src",
+			"prefix": "app",
+			"architect": {
+				"build": {
+					"builder": "@angular-architects/native-federation-v4:build",
+					"options": {
+						"cacheExternalArtifacts": true,
+						"tsConfig": "profile/tsconfig.federation.json"
+					},
+					"configurations": {
+						"production": {
+							"target": "profile:esbuild:production"
+						},
+						"development": {
+							"target": "profile:esbuild:development",
+							"dev": true
+						}
+					},
+					"defaultConfiguration": "production"
+				},
+				"serve": {
+					"builder": "@angular-architects/native-federation-v4:build",
+					"options": {
+						"target": "profile:serve-original:development",
+						"tsConfig": "profile/tsconfig.federation.json",
+						"rebuildDelay": 500,
+						"cacheExternalArtifacts": true,
+						"dev": true,
+						"devServer": true,
+						"port": 0
+					}
+				},
+				"esbuild": {
+					"builder": "@angular/build:application",
+					"options": {
+						"browser": "profile/src/main.ts",
+						"tsConfig": "profile/tsconfig.app.json",
+						"inlineStyleLanguage": "scss",
+						"assets": [
+							{
+								"glob": "**/*",
+								"input": "profile/public"
+							}
+						],
+						"styles": [
+							"profile/src/styles.scss"
+						],
+						"polyfills": [
+							"es-module-shims"
+						]
+					},
+					"configurations": {
+						"production": {
+							"budgets": [
+								{
+									"type": "initial",
+									"maximumWarning": "500kB",
+									"maximumError": "1MB"
+								},
+								{
+									"type": "anyComponentStyle",
+									"maximumWarning": "4kB",
+									"maximumError": "8kB"
+								}
+							],
+							"outputHashing": "all"
+						},
+						"development": {
+							"optimization": false,
+							"extractLicenses": false,
+							"sourceMap": true
+						}
+					},
+					"defaultConfiguration": "production"
+				},
+				"serve-original": {
+					"builder": "@angular/build:dev-server",
+					"configurations": {
+						"production": {
+							"buildTarget": "profile:esbuild:production"
+						},
+						"development": {
+							"buildTarget": "profile:esbuild:development"
+						}
+					},
+					"defaultConfiguration": "development",
+					"options": {
+						"port": 4203
+					}
+				}
+			}
+		},
+		"notifications": {
+			"projectType": "application",
+			"schematics": {
+				"@schematics/angular:component": {
+					"style": "scss",
+					"skipTests": true
+				},
+				"@schematics/angular:class": {
+					"skipTests": true
+				},
+				"@schematics/angular:directive": {
+					"skipTests": true
+				},
+				"@schematics/angular:guard": {
+					"skipTests": true
+				},
+				"@schematics/angular:interceptor": {
+					"skipTests": true
+				},
+				"@schematics/angular:pipe": {
+					"skipTests": true
+				},
+				"@schematics/angular:resolver": {
+					"skipTests": true
+				},
+				"@schematics/angular:service": {
+					"skipTests": true
+				}
+			},
+			"root": "notifications",
+			"sourceRoot": "notifications/src",
+			"prefix": "app",
+			"architect": {
+				"build": {
+					"builder": "@angular-architects/native-federation-v4:build",
+					"options": {
+						"cacheExternalArtifacts": true,
+						"tsConfig": "notifications/tsconfig.federation.json"
+					},
+					"configurations": {
+						"production": {
+							"target": "notifications:esbuild:production"
+						},
+						"development": {
+							"target": "notifications:esbuild:development",
+							"dev": true
+						}
+					},
+					"defaultConfiguration": "production"
+				},
+				"serve": {
+					"builder": "@angular-architects/native-federation-v4:build",
+					"options": {
+						"target": "notifications:serve-original:development",
+						"tsConfig": "notifications/tsconfig.federation.json",
+						"rebuildDelay": 500,
+						"cacheExternalArtifacts": true,
+						"dev": true,
+						"devServer": true,
+						"port": 0
+					}
+				},
+				"esbuild": {
+					"builder": "@angular/build:application",
+					"options": {
+						"browser": "notifications/src/main.ts",
+						"tsConfig": "notifications/tsconfig.app.json",
+						"inlineStyleLanguage": "scss",
+						"assets": [
+							{
+								"glob": "**/*",
+								"input": "notifications/public"
+							}
+						],
+						"styles": [
+							"notifications/src/styles.scss"
+						],
+						"polyfills": [
+							"es-module-shims"
+						]
+					},
+					"configurations": {
+						"production": {
+							"budgets": [
+								{
+									"type": "initial",
+									"maximumWarning": "500kB",
+									"maximumError": "1MB"
+								},
+								{
+									"type": "anyComponentStyle",
+									"maximumWarning": "4kB",
+									"maximumError": "8kB"
+								}
+							],
+							"outputHashing": "all"
+						},
+						"development": {
+							"optimization": false,
+							"extractLicenses": false,
+							"sourceMap": true
+						}
+					},
+					"defaultConfiguration": "production"
+				},
+				"serve-original": {
+					"builder": "@angular/build:dev-server",
+					"configurations": {
+						"production": {
+							"buildTarget": "notifications:esbuild:production"
+						},
+						"development": {
+							"buildTarget": "notifications:esbuild:development"
+						}
+					},
+					"defaultConfiguration": "development",
+					"options": {
+						"port": 4204
+					}
+				}
+			}
+		}
+	}
 }

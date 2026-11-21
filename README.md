@@ -1,6 +1,6 @@
 # Northstar Banking Microfrontends
 
-Northstar is an Angular workspace split into a platform shell and two business-domain applications. It demonstrates how separate teams can build and release their areas independently while preserving a consistent navigation and visual language.
+Northstar is an Angular workspace split into a platform shell and independently deployable business-domain applications. Profile and Notifications are true runtime-loaded microfrontends, demonstrating how teams can build and release their areas independently while preserving a consistent navigation and visual language.
 
 ## Architecture
 
@@ -15,28 +15,28 @@ Northstar is an Angular workspace split into a platform shell and two business-d
                   ┌─────────────────────┴─────────────────────┐
                   │                                           │
       ┌───────────▼────────────┐                  ┌───────────▼────────────┐
-      │ Accounts · Team A      │                  │ Trading · Team B       │
-      │ localhost:4201         │                  │ localhost:4202         │
-      │ balances · activity    │                  │ markets · orders       │
+      │ Profile · Identity     │                  │ Notifications · Engage │
+      │ localhost:4203         │                  │ localhost:4204         │
+      │ user identity          │                  │ alert feed             │
       └────────────────────────┘                  └────────────────────────┘
 ```
 
 | Application | Owner | Local URL | Responsibility |
 | --- | --- | --- | --- |
 | Shell | Platform team | [localhost:4200](http://localhost:4200) | navigation, authentication boundary, layout, overview dashboard and remote route ownership |
-| Accounts | Team A | [localhost:4201](http://localhost:4201) | account balances and recent account activity |
-| Trading | Team B | [localhost:4202](http://localhost:4202) | portfolio view, watchlist and trade entry point |
+| Profile | Identity team | [localhost:4203](http://localhost:4203) | user identity and security settings; loaded inside the shell |
+| Notifications | Engagement team | [localhost:4204](http://localhost:4204) | alert feed and notification controls; loaded inside the shell |
 
-Each application has its own `main.ts`, styles and independently runnable Angular build target. The shared public integration contract lives in [contracts/remote-routes.ts](contracts/remote-routes.ts). This keeps the shell aware only of a remote's stable name, base route and deployment entry—not its internal feature code.
+Each federated application has its own `main.ts`, styles and independently runnable Angular build target. Native Federation produces each remote's `remoteEntry.json`; the shell resolves those entries through [federation.manifest.json](shell/src/assets/federation.manifest.json), then lazy-loads the exposed component on navigation.
 
 ## How it works
 
 1. The shell starts at `/` and renders the global sidebar, top bar and financial overview.
-2. Selecting **Accounts** or **Trading** changes the shell route to `/accounts` or `/trading`.
-3. The route identifies the owning team and links to the independently running app during local development.
-4. Each team can develop, test and build its app without rebuilding the other team's UI.
+2. Selecting **Profile** or **Notifications** changes the shell route to `/profile` or `/notifications`.
+3. Angular's `loadRemoteModule` fetches the requested remote's `remoteEntry.json` and renders its exposed component inside the shell's `<router-outlet>`.
+4. Each remote can be developed, tested, built and deployed without rebuilding the other remote's feature UI.
 
-The included implementation uses route placeholders as the local integration boundary. For a production deployment, replace those placeholders in [shell/src/app/app.ts](shell/src/app/app.ts) with a Module Federation or Native Federation loader. The contract already provides the intended `remoteEntry.json` URL for each remote.
+The federation integration is implemented in [shell/src/app/app.ts](shell/src/app/app.ts). To deploy to another environment, publish each remote's built `browser/` folder and replace its URL in `shell/src/assets/federation.manifest.json` during deployment.
 
 ## Design
 
@@ -105,6 +105,20 @@ npm start
 
 Open [http://localhost:4200](http://localhost:4200). Make sure another Angular application is not already using port `4200`; stop it with `Ctrl+C` or use a different port.
 
+**Terminal 4 — Profile remote**
+
+```bash
+npm run start:profile
+```
+
+**Terminal 5 — Notifications remote**
+
+```bash
+npm run start:notifications
+```
+
+Now use the Profile and Notifications sidebar items in the shell. They are fetched at runtime from ports `4203` and `4204` and displayed within the host application.
+
 ## Build
 
 Create production builds for the full workspace:
@@ -119,6 +133,8 @@ Or build applications separately, which mirrors independent team delivery:
 npm run build:shell
 npm run build:accounts
 npm run build:trading
+npm run build:profile
+npm run build:notifications
 ```
 
 Angular writes build output to `dist/`, which is intentionally excluded from Git.
@@ -138,6 +154,8 @@ Once the services are healthy, open:
 | Shell | [http://localhost:4200](http://localhost:4200) |
 | Accounts | [http://localhost:4201](http://localhost:4201) |
 | Trading | [http://localhost:4202](http://localhost:4202) |
+| Profile remote | [http://localhost:4203](http://localhost:4203) |
+| Notifications remote | [http://localhost:4204](http://localhost:4204) |
 
 Inspect service status and logs:
 
@@ -162,6 +180,8 @@ microfrontends/
 │   └── src/app/app.ts        # Shell routes and dashboard
 ├── accounts/                 # Team A remote application
 ├── trading/                  # Team B remote application
+├── profile/                   # Federated Profile remote
+├── notifications/             # Federated Notifications remote
 ├── contracts/
 │   └── remote-routes.ts      # Stable shell-to-remote integration contract
 ├── angular.json              # Build and serve targets
@@ -175,7 +195,11 @@ microfrontends/
 | `npm start` | Serve the shell at port 4200 |
 | `npm run start:accounts` | Serve Accounts at port 4201 |
 | `npm run start:trading` | Serve Trading at port 4202 |
+| `npm run start:profile` | Serve the Profile microfrontend at port 4203 |
+| `npm run start:notifications` | Serve the Notifications microfrontend at port 4204 |
 | `npm run build` | Build all three apps |
 | `npm run build:shell` | Build only the shell |
 | `npm run build:accounts` | Build only Accounts |
 | `npm run build:trading` | Build only Trading |
+| `npm run build:profile` | Build only the Profile microfrontend |
+| `npm run build:notifications` | Build only the Notifications microfrontend |

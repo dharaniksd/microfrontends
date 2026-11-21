@@ -5,10 +5,14 @@
     "start": "ng serve shell --port 4200",
     "start:accounts": "ng serve accounts --port 4201",
     "start:trading": "ng serve trading --port 4202",
-    "build": "ng build shell && ng build accounts && ng build trading",
+    "start:profile": "ng serve profile --port 4203",
+    "start:notifications": "ng serve notifications --port 4204",
+    "build": "ng build shell && ng build accounts && ng build trading && ng build profile && ng build notifications",
     "build:shell": "ng build shell",
     "build:accounts": "ng build accounts",
-    "build:trading": "ng build trading"
+    "build:trading": "ng build trading",
+    "build:profile": "ng build profile",
+    "build:notifications": "ng build notifications"
   },
   "dependencies": {
     "@angular/common": "^21.1.0",
@@ -17,12 +21,16 @@
     "@angular/platform-browser": "^21.1.0",
     "@angular/router": "^21.1.0",
     "rxjs": "~7.8.0",
-    "tslib": "^2.3.0"
+    "tslib": "^2.3.0",
+    "es-module-shims": "^2.8.0"
   },
   "devDependencies": {
+    "@angular-architects/native-federation-v4": "^21.2.18",
     "@angular/build": "^21.1.2",
     "@angular/cli": "^21.1.2",
     "@angular/compiler-cli": "^21.1.0",
-    "typescript": "~5.9.2"
+    "typescript": "~5.9.2",
+    "@angular-devkit/build-angular": "^21.1.2",
+    "@softarc/native-federation-orchestrator": "^4.10.0"
   }
 }
